@@ -17,9 +17,9 @@ const ToDoScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>  {/* Makes components visable regardless of phone model */}
+    <SafeAreaView style={styles.container}> 
       <View style={styles.inputContainer}>
-        <TextInput // Allows text to be editable after creation
+        <TextInput 
           style={styles.input}
           placeholder="Enter task"
           value={task}
@@ -27,7 +27,7 @@ const ToDoScreen = () => {
         />
         <Button title="Add" onPress={addTask} />
       </View>
-      <FlatList // Displays todos in tasks array
+      <FlatList
         style={styles.list}
         data={tasks}
         keyExtractor={(item) => item.id}

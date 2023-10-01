@@ -5,7 +5,7 @@ import Navigator from './Navigator';
 const App = () => {
   return (
     <NavigationContainer>
-      <Navigator /> {/* Displays the navigator of the screens */}
+      <Navigator /> 
     </NavigationContainer>
   );
 };
