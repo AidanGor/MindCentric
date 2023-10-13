@@ -1,50 +1,78 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 const ListScreen = ({ navigation }) => {
-    const [listName, setListName] = useState('');
-    const [lists, setLists] = useState([]);
-  
-    const addList = () => {
-      if (listName.trim() !== '') {
-        setLists([...lists, { id: Date.now().toString(), name: listName }]);
-        setListName('');
-      }
-    };
-  
-    const removeList = (listId) => {
-      setLists(lists.filter((list) => list.id !== listId));
-    };
-  
-    return (
-      <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter list name"
-          value={listName}
-          onChangeText={(text) => setListName(text)}
-        />
-        <Button title="Add List" onPress={addList} />
-        <FlatList
-          data={lists}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.listItem}>
-              <TextInput
-                style={styles.editableText}
-                value={item.name}
-                onChangeText={(text) => {
-                  setLists((prevLists) =>
-                    prevLists.map((list) => (list.id === item.id ? { ...list, name: text } : list))
-                  );
+  const [listName, setListName] = useState(''); // Hook for creating a list before storing it 
+  const [lists, setLists] = useState([]); // Hook for storing lists in an array of objects
+
+  const addList = () => { // CREATE: Adds a new list
+    if (listName.trim() !== '') {
+      const newList = { id: Date.now().toString(), name: listName, tasks: [] };
+      setLists([...lists, newList]);
+      setListName('');
+      navigateToTodoList(newList);
+    }
+  };
+
+  const removeList = (listId) => { // DELETE: Removes a specific list based on listID from input
+    setLists(lists.filter((list) => list.id !== listId));
+  };
+
+  const editListName = (listId, newName) => { // UPDATE: Edits name of list through mapping all lists but renaming the list that matches with the inputted listID
+    setLists((prevLists) =>
+      prevLists.map((list) => (list.id === listId ? { ...list, name: newName } : list))
+    );
+  };
+
+  const navigateToTodoList = (list) => { // Navigates to specific task view of list based on pressed list
+    navigation.navigate('TodoList', {
+      list,
+      updateList: (updatedList) => updateList(list.id, updatedList),
+    });
+  };
+
+  const updateList = (listId, updatedList) => { // Renders all tasks from a specific list based on listID
+    setLists((prevLists) =>
+      prevLists.map((list) => (list.id === listId ? updatedList : list))
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter list name"
+        value={listName}
+        onChangeText={(text) => setListName(text)}
+      />
+      <Button title="Add List" onPress={addList} />
+      {/* READ: displays list name and options to view associated tasks and update or remove list */}
+      <FlatList 
+        data={lists}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <TouchableOpacity onPress={() => navigateToTodoList(item)}>
+              <Text style={styles.editableText}>{item.name}</Text>
+            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <Button title="Remove" onPress={() => removeList(item.id)} />
+              <Button
+                title="Edit"
+                onPress={() => {
+                  Alert.prompt('Enter new name:', item.name, (newName) => {
+                    if (newName !== null && newName !== item.name) {
+                      editListName(item.id, newName);
+                    }
+                  });
                 }}
               />
-              <Button title="Remove" onPress={() => removeList(item.id)} />
             </View>
-          )}
-        />
-      </View>
-    );
+          </View>
+        )}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -61,6 +89,24 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingHorizontal: 8,
     width: '80%',
+  },
+  listItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 8,
+    marginBottom: 8,
+  },
+  editableText: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 8,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
   },
 });
 

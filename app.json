@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MindCentric",
-    "slug": "MindCentric",
+    "slug": "mindcentric",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,16 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.AidanGor.MindCentric"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.AidanGor.MindCentric"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "91c09571-a1a3-4d1f-8b27-46d713c12217"
+      }
+    },
+    "owner": "aidangor"
   }
 }
