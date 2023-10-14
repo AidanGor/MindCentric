@@ -16,14 +16,18 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.AidanGor.MindCentric"
+      "bundleIdentifier": "com.AidanGor.MindCentric",
+      "runtimeVersion": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.AidanGor.MindCentric"
+      "package": "com.AidanGor.MindCentric",
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +37,9 @@
         "projectId": "91c09571-a1a3-4d1f-8b27-46d713c12217"
       }
     },
-    "owner": "aidangor"
+    "owner": "aidangor",
+    "updates": {
+      "url": "https://u.expo.dev/91c09571-a1a3-4d1f-8b27-46d713c12217"
+    }
   }
 }
