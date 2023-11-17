@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyD4a9lbwIF-2TSHo5p16DMm0CDLBRT6SgE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>243143975352</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.AidanGor.MindCentric</string>
+	<key>PROJECT_ID</key>
+	<string>mind-centric</string>
+	<key>STORAGE_BUCKET</key>
+	<string>mind-centric.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:243143975352:ios:54c9c67b5f2bec60896f4d</string>
+</dict>
+</plist>

@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.AidanGor.MindCentric",
+      "bundleIdentifier": "com.the-public-school-of-germantown.MindCentric",
       "runtimeVersion": "1.0.0"
     },
     "android": {
