@@ -1,16 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import {db} from "../firebaseConfig"
+import { ref, set, get, child, update } from "firebase/database";
 
 const ListScreen = ({ navigation }) => {
   const [listName, setListName] = useState(''); // Hook for creating a list before storing it 
   const [lists, setLists] = useState([]); // Hook for storing lists in an array of objects
+  const [numLists, setNumLists] = useState(undefined);
+  const [test, setTest] = useState(0);
+
+  useEffect(() => {
+    // update(ref(db, `userInfo/` + userID), {genres: ["placeholder"]});
+    get(child(ref(db), `Users/User001}`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const info = snapshot.val();
+                // setTest(1);
+                setNumLists(info.numLists)
+                setTest(info.numLists)
+            } else {
+                // console.log("Error with firebase");
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+  }, []);
+
+  useEffect(()=>{
+    
+    // setTest(1)
+   
+  },[numLists])
 
   const addList = () => { // CREATE: Adds a new list
     if (listName.trim() !== '') {
       const newList = { id: Date.now().toString(), name: listName, tasks: [] };
       setLists([...lists, newList]);
       setListName('');
+      // updateListDB();
       navigateToTodoList(newList);
+      
     }
   };
 
@@ -37,15 +67,23 @@ const ListScreen = ({ navigation }) => {
     );
   };
 
+  const updateListDB = () => {
+    set(ref(db, 'Users/User001/'), {
+      Lists: lists
+    });
+  }
+  
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Enter list name"
+        placeholder="Enter List Name"
         value={listName}
         onChangeText={(text) => setListName(text)}
       />
       <Button title="Add List" onPress={addList} />
+      <Text>{`${test}`}</Text>
       {/* READ: displays list name and options to view associated tasks and update or remove list */}
       <FlatList 
         data={lists}
