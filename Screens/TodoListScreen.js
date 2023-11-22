@@ -1,50 +1,58 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Button, TextInput, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { ref, set, child} from 'firebase/database';
+import { ref, set, child, push } from 'firebase/database';
 import { db } from '../firebaseConfig';
 
 const TodoListScreen = ({ route }) => {
-  const { list, updateList } = route.params;
+  const { list} = route.params;
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState(list.tasks || []);
 
-  const memoizedUpdateList = useCallback(
-    (updatedList) => {
-      updateList(updatedList);
-    },
-    [updateList]
-  );
+  // const memoizedUpdateList = useCallback(
+  //   (updatedList) => {
+  //     updateList(updatedList);
+  //   },
+  //   [updateList]
+  // );
 
-  useEffect(() => {
-    memoizedUpdateList({ ...list, tasks });
-  }, [list, tasks, memoizedUpdateList]);
+  // useEffect(() => {
+  //   memoizedUpdateList({ ...list, tasks });
+  // }, [list, tasks, memoizedUpdateList]);
 
   const addTask = () => {
     if (task.trim() !== '') {
       const newTask = { id: Date.now().toString(), text: task };
       setTasks([...tasks, newTask]);
       setTask('');
-      updateList({ ...list, tasks: [...tasks, newTask] });
-      updateListDB({ ...list, tasks: [...tasks, newTask] });
+      // updateList((prevList) => ({ ...prevList, tasks: [...prevList.tasks, newTask] }));
+      updateTaskDB([...tasks, newTask], list.id);
     }
   };
 
   const removeTask = (taskId) => {
     const updatedTasks = tasks.filter((t) => t.id !== taskId);
-    updateList({ ...list, tasks: updatedTasks });
-    updateListDB({ ...list, tasks: updatedTasks });
+    setTasks(updatedTasks);
+    // updateList((prevList) => ({ ...prevList, tasks: updatedTasks }));
+    updateTaskDB((prevList) => ({ ...prevList, tasks: updatedTasks }));
   };
 
   const editTask = (taskId, newText) => {
     const updatedTasks = tasks.map((t) => (t.id === taskId ? { ...t, text: newText } : t));
-    updateList({ ...list, tasks: updatedTasks });
-    updateListDB({ ...list, tasks: updatedTasks });
+    setTasks(updatedTasks);
+    // updateList((prevList) => ({ ...prevList, tasks: updatedTasks }));
+    updateTaskDB((prevList) => ({ ...prevList, tasks: updatedTasks }));
   };
 
-  const updateListDB = (updatedList) => {
-    const userRef = ref(db, `Users/admin`);
-    const listRef = child(userRef, `Lists/${list.id}`);
-    set(listRef, updatedList);
+  // const updateListDB = (updatedList) => {
+  //   const userRef = ref(db, `Users/admin`);
+  //   const listRef = child(userRef, `Lists/${list.id}`);
+  //   set(listRef, updatedList);
+  // };
+
+  const updateTaskDB = (updatedTasks, id) => {
+    set(ref(db, `Users/admin/Lists/${list.id}`), {
+      tasks: updatedTasks
+    });
   };
 
   return (
@@ -57,6 +65,7 @@ const TodoListScreen = ({ route }) => {
         onChangeText={(text) => setTask(text)}
       />
       <Button title="Add Task" onPress={addTask} />
+      <Text>{list.id}</Text>
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
@@ -107,7 +116,6 @@ const styles = StyleSheet.create({
   },
   taskItem: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',

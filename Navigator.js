@@ -11,20 +11,22 @@ const Tab = createBottomTabNavigator();
 const ListsStack = createStackNavigator();
 const auth = getAuth();
 
-const ListsStackScreen = ({user}) => ( // Navigation for CRUD++ lists that contain tasks
-  <ListsStack.Navigator>
-    <ListsStack.Screen 
-      name="ListsScreen" 
-      component={ListScreen} 
-      initialParams={{user: user}}
-    />
-    <ListsStack.Screen 
-      name="TodoList" 
-      component={TodoListScreen}
-      initialParams={{user: user}}
-    />
-  </ListsStack.Navigator>
-);
+const ListsStackScreen = ({user}) => { // Navigation for CRUD++ lists that contain tasks
+  return(
+    <ListsStack.Navigator>
+      <ListsStack.Screen 
+        name="ListsScreen" 
+        component={ListScreen} 
+        initialParams={{user: user}}
+      />
+      <ListsStack.Screen 
+        name="TodoList" 
+        component={TodoListScreen}
+        initialParams={{user: user}}
+      />
+    </ListsStack.Navigator>
+  )
+  };
 
 const Tabs = ({user}) => { // Navigation for different tabs in app
   return (

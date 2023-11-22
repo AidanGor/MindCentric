@@ -3,22 +3,23 @@ import { View, Text, Button, TextInput, FlatList, StyleSheet, TouchableOpacity, 
 import { db } from "../firebaseConfig";
 import { ref, get, child, set } from "firebase/database";
 
-const ListScreen = ({ navigation }) => {
+const ListScreen = ({ navigation, route }) => {
+  const { listID, setListID } = route.params;
   const [listName, setListName] = useState('');
   const [lists, setLists] = useState([]);
   const [numLists, setNumLists] = useState(undefined);
   const userID = "admin"; 
 
   useEffect(() => {
-    const userRef = child(ref(db), `Users/${userID}`);
     
-    get(userRef)
+    get(child(ref(db), 'Users/admin'))
       .then((snapshot) => {
         if (snapshot.exists()) {
           const info = snapshot.val();
           setNumLists(info.numLists);
           setLists(info.Lists || []); 
         } else {
+
         }
       })
       .catch((error) => {
@@ -28,50 +29,47 @@ const ListScreen = ({ navigation }) => {
 
   const addList = () => {
     if (listName.trim() !== '') {
-      const newList = { id: Date.now().toString(), name: listName, tasks: [] };
-      setLists((prevLists) => [...prevLists, newList]);
+      const newList = { id: numLists + 1, name: listName, tasks: ['task'] };
+      setLists([...lists, newList]);
+      setNumLists(numLists+1); 
       setListName('');
-  
-  
-      setLists((prevLists) => {
-        const updatedLists = [...prevLists, newList];
-        updateListDB(updatedLists);
-        return updatedLists;
-      });
+      const numberLists = numLists + 1;
+      updateListDB([...lists, newList], numberLists);
+      // navigateToTodoList(newList);
     }
   };
 
   const removeList = (listId) => {
     setLists((prevLists) => prevLists.filter((list) => list.id !== listId));
-    updateListDB(lists.filter((list) => list.id !== listId));
+    setNumLists(numLists - 1); 
+    updateListDB(lists.filter((list) => list.id !== listId), numLists-1);
   };
 
   const editListName = (listId, newName) => {
     setLists((prevLists) =>
       prevLists.map((list) => (list.id === listId ? { ...list, name: newName } : list))
     );
-    updateListDB(lists.map((list) => (list.id === listId ? { ...list, name: newName } : list)));
+    updateListDB(lists.map((list) => (list.id === listId ? { ...list, name: newName } : list)), numLists);
   };
 
-  const updateListDB = (updatedLists) => {
+  const updateListDB = (updatedLists, numberList) => {
     set(ref(db, `Users/${userID}`), {
-      numLists: updatedLists.length,
+      numLists: numberList,
       Lists: updatedLists,
     });
-  };
-
-  const updateList = (listId, updatedList) => {
-    setLists((prevLists) =>
-      prevLists.map((list) => (list.id === listId ? updatedList : list))
-    );
   };
 
   const navigateToTodoList = (list) => {
     navigation.navigate('TodoList', {
       list,
-      updateList: (updatedList) => updateList(list.id, updatedList),
+      // updateList: (listId, updatedList) => updateList(listId, updatedList), // Define updateList here
     });
   };
+
+  // const updateList = (listId, updatedList) => {
+  //   const updatedLists = lists.map((list) => (list.id === listId ? updatedList : list));
+  //   updateListDB(updatedLists, numLists);
+  // };
 
   return (
     <View style={styles.container}>
@@ -82,7 +80,7 @@ const ListScreen = ({ navigation }) => {
         onChangeText={(text) => setListName(text)}
       />
       <Button title="Add List" onPress={addList} />
-
+      <Text>{numLists}</Text>
       <FlatList 
         data={lists}
         keyExtractor={(item) => item.id}
