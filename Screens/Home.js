@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Button, FlatList, SafeAreaView } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ route }) => {
+  const { user } = route.params;
   return (
     <View style={styles.container}>
       <Text style={styles.title}>MindCentric</Text>
       <Text style={styles.subTitle}>Your Aid to Prosperous Mental Health & Education</Text>
-      <Text style={styles.title}>Welcome Back, User!</Text>
+      <Text style={styles.title}>{`Welcome Back, User!`}</Text>
     </View>
   );
 };
